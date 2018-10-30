@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.row_session.view.*
 import rocks.mobileera.mobileera.R
 import rocks.mobileera.mobileera.adapters.TagsAdapter
-import rocks.mobileera.mobileera.adapters.interfaces.TagCallback
+import rocks.mobileera.mobileera.adapters.interfaces.OnTagClickedListener
 import rocks.mobileera.mobileera.model.Session
 import rocks.mobileera.mobileera.utils.CircleTransform
 import rocks.mobileera.mobileera.utils.Preferences.Companion.domain
@@ -24,7 +24,7 @@ import rocks.mobileera.mobileera.utils.favoriteIconResForSession
 
 class SessionViewHolder(
     val view: View,
-    private val tagsListener: TagCallback?,
+    private val onTagClicked: OnTagClickedListener,
     private val onAddToFavoritesClicked: OnAddToFavoritesClickedListener
 ) : RecyclerView.ViewHolder(view) {
     val titleTextView: TextView = view.titleTextView
@@ -84,7 +84,7 @@ class SessionViewHolder(
             layoutManager.flexDirection = FlexDirection.ROW_REVERSE
             layoutManager.justifyContent = JustifyContent.FLEX_END
             tagsRecyclerView.layoutManager = layoutManager
-            tagsRecyclerView.adapter = TagsAdapter(tags, tagsListener)
+            tagsRecyclerView.adapter = TagsAdapter(tags, onTagClicked)
 
             val dividerItemDecoration = DividerItemDecoration(context,
                     RecyclerView.VERTICAL)

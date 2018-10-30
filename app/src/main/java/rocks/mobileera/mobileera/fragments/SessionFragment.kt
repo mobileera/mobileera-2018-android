@@ -1,7 +1,5 @@
 package rocks.mobileera.mobileera.fragments
 
-
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
@@ -28,7 +26,6 @@ import rocks.mobileera.mobileera.adapters.interfaces.SpeakerCallback
 import rocks.mobileera.mobileera.utils.favoriteIconResForSession
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class SessionFragment : Fragment() {
 
@@ -160,7 +157,7 @@ class SessionFragment : Fragment() {
             layoutManager.flexDirection = FlexDirection.ROW_REVERSE
             layoutManager.justifyContent = JustifyContent.FLEX_END
             tagsRecyclerView.layoutManager = layoutManager
-            tagsRecyclerView.adapter = TagsAdapter(tags, null)
+            tagsRecyclerView.adapter = TagsAdapter(tags, onTagClicked = { })
 
             activity?.applicationContext?.resources?.getDrawable(R.drawable.divirer_tags_horizontal)?.let {
                 val dividerItemDecoration = DividerItemDecoration(context,

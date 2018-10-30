@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.row_header_timeslot.view.*
 import rocks.mobileera.mobileera.R
 import rocks.mobileera.mobileera.adapters.interfaces.OnAddToFavoritesClickedListener
 import rocks.mobileera.mobileera.adapters.interfaces.OnSessionClickedListener
-import rocks.mobileera.mobileera.adapters.interfaces.TagCallback
+import rocks.mobileera.mobileera.adapters.interfaces.OnTagClickedListener
 import rocks.mobileera.mobileera.adapters.viewHolders.SessionViewHolder
 import rocks.mobileera.mobileera.model.Day
 import rocks.mobileera.mobileera.model.Legend
@@ -23,7 +23,7 @@ class DayAdapter(
     day: Day?,
     private val onSessionClicked: OnSessionClickedListener,
     private val onAddToFavoritesClicked: OnAddToFavoritesClickedListener,
-    private val tagsListener: TagCallback?
+    private val onTagClicked: OnTagClickedListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val onSessionClickListener: View.OnClickListener
@@ -52,16 +52,25 @@ class DayAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder  {
+        val layoutInflater = LayoutInflater.from(parent.context)
 
-        if (viewType == VIEW_HOLDER_TYPE_HEADER) {
-            return HeaderViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_header_timeslot, parent, false))
+        return when (viewType) {
+            VIEW_HOLDER_TYPE_HEADER -> {
+                val itemView = layoutInflater.inflate(R.layout.row_header_timeslot, parent, false)
+
+                HeaderViewHolder(itemView)
+            }
+            VIEW_HOLDER_TYPE_SESSION -> {
+                val itemView = layoutInflater.inflate(R.layout.row_session, parent, false)
+
+                SessionViewHolder(itemView, onTagClicked, onAddToFavoritesClicked)
+            }
+            else -> {
+                val itemView = layoutInflater.inflate(R.layout.row_legend, parent, false)
+
+                LegendViewHolder(itemView)
+            }
         }
-
-        if (viewType == VIEW_HOLDER_TYPE_SESSION) {
-            return SessionViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_session, parent, false), tagsListener, onAddToFavoritesClicked)
-        }
-
-        return LegendViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_legend, parent, false))
     }
 
     override fun getItemViewType(position: Int): Int {

@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.row_tag_clickable.view.*
 import rocks.mobileera.mobileera.R
-import rocks.mobileera.mobileera.adapters.interfaces.TagCallback
+import rocks.mobileera.mobileera.adapters.interfaces.OnTagClickedListener
 import rocks.mobileera.mobileera.model.Tag
 
 class TagsAdapter (
-        private val tags: List<String>,
-        private val listener: TagCallback?)
-    : RecyclerView.Adapter<TagsAdapter.ViewHolder>() {
+    private val tags: List<String>,
+    private val onTagClicked: OnTagClickedListener
+) : RecyclerView.Adapter<TagsAdapter.ViewHolder>() {
 
     private val onClickListener: View.OnClickListener
 
@@ -22,7 +22,7 @@ class TagsAdapter (
             val position = v.tag
             if (position is Int) {
                 tags.getOrNull(position)?.let {tag ->
-                    listener?.onTagClick(tag)
+                    onTagClicked(tag)
                 }
             }
         }

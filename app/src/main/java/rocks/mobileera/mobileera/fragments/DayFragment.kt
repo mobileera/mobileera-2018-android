@@ -2,7 +2,6 @@ package rocks.mobileera.mobileera.fragments
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -15,7 +14,6 @@ import rocks.mobileera.mobileera.R
 import rocks.mobileera.mobileera.adapters.DayAdapter
 import rocks.mobileera.mobileera.adapters.interfaces.OnAddToFavoritesClickedListener
 import rocks.mobileera.mobileera.adapters.interfaces.OnSessionClickedListener
-import rocks.mobileera.mobileera.adapters.interfaces.TagCallback
 import rocks.mobileera.mobileera.model.Day
 import rocks.mobileera.mobileera.viewModels.ScheduleViewModel
 
@@ -38,8 +36,6 @@ class DayFragment: Fragment() {
             navController.navigate(R.id.action_navigation_schedule_to_sessionFragment, bundle)
         }
     }
-
-    private var tagListener: TagCallback? = null
 
     private var title: CharSequence? = ""
     private var dayIndex: Int = 0
@@ -76,18 +72,6 @@ class DayFragment: Fragment() {
         return ""
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is TagCallback) {
-            tagListener = context
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        tagListener = null
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_day, container, false)
 
@@ -97,7 +81,7 @@ class DayFragment: Fragment() {
                 day = day,
                 onSessionClicked = onSessionClicked,
                 onAddToFavoritesClicked = onAddToFavoritesClicked,
-                tagsListener = tagListener
+                onTagClicked = { }
             )
 
             val viewModel = ViewModelProviders.of(it).get(ScheduleViewModel::class.java)
