@@ -7,26 +7,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.row_header_timeslot.view.*
-import kotlinx.android.synthetic.main.row_session.view.*
 import rocks.mobileera.mobileera.R
 import rocks.mobileera.mobileera.adapters.interfaces.AddToFavoritesCallback
-import rocks.mobileera.mobileera.adapters.interfaces.SessionCallback
+import rocks.mobileera.mobileera.adapters.interfaces.OnSessionClickedListener
 import rocks.mobileera.mobileera.adapters.interfaces.TagCallback
 import rocks.mobileera.mobileera.adapters.viewHolders.SessionViewHolder
 import rocks.mobileera.mobileera.model.Day
 import rocks.mobileera.mobileera.model.Legend
-
-import rocks.mobileera.mobileera.utils.Preferences
 import rocks.mobileera.mobileera.model.Session
 import rocks.mobileera.mobileera.model.Timeslot
+import rocks.mobileera.mobileera.utils.Preferences
 
 class DayAdapter(
-        private val context: Context?,
-        day: Day?,
-        private val sessionListener: SessionCallback?,
-        private val addToFavoritesListener: AddToFavoritesCallback?,
-        private val tagsListener: TagCallback?)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val context: Context?,
+    day: Day?,
+    private val onSessionClicked: OnSessionClickedListener,
+    private val addToFavoritesListener: AddToFavoritesCallback?,
+    private val tagsListener: TagCallback?
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val onSessionClickListener: View.OnClickListener
     private val VIEW_HOLDER_TYPE_HEADER = 0
@@ -47,10 +45,9 @@ class DayAdapter(
             position?.let {
                 val session = data.getOrNull(position)
                 if (session is Session) {
-                   sessionListener?.onSessionClick(session)
+                   onSessionClicked(session)
                 }
             }
-
         }
     }
 

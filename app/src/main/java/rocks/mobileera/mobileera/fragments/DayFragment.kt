@@ -10,21 +10,30 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.NavHostFragment
 import rocks.mobileera.mobileera.R
 import rocks.mobileera.mobileera.adapters.DayAdapter
 import rocks.mobileera.mobileera.adapters.interfaces.AddToFavoritesCallback
-import rocks.mobileera.mobileera.adapters.interfaces.SessionCallback
+import rocks.mobileera.mobileera.adapters.interfaces.OnSessionClickedListener
 import rocks.mobileera.mobileera.adapters.interfaces.TagCallback
 import rocks.mobileera.mobileera.model.Day
 import rocks.mobileera.mobileera.viewModels.ScheduleViewModel
-
 
 class DayFragment: Fragment() {
 
     private val ARGS_DAY_INDEX = "ARGS_DAY_INDEX"
     private val ARGS_TITLE = "ARGS_TITLE"
 
-    private var sessionListener: SessionCallback? = null
+    private var onSessionClicked: OnSessionClickedListener = { session ->
+    private val onSessionClicked: OnSessionClickedListener = { session ->
+        session?.let { value ->
+            val navController = NavHostFragment.findNavController(this)
+            val bundle = SessionFragment.createBundle(value)
+
+            navController.navigate(R.id.action_navigation_schedule_to_sessionFragment, bundle)
+        }
+    }
+
     private var tagListener: TagCallback? = null
     private var addToFavoritesListener: AddToFavoritesCallback? = null
 
@@ -72,24 +81,19 @@ class DayFragment: Fragment() {
         if (context is TagCallback) {
             tagListener = context
         }
-
-        if (context is SessionCallback) {
-            sessionListener = context
-        }
     }
 
     override fun onDetach() {
         super.onDetach()
         addToFavoritesListener = null
         tagListener = null
-        sessionListener = null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_day, container, false)
 
         parentFragment?.let {
-            dayAdapter = DayAdapter(activity?.applicationContext, day, sessionListener, addToFavoritesListener, tagListener)
+            dayAdapter = DayAdapter(activity?.applicationContext, day, onSessionClicked, addToFavoritesListener, tagListener)
 
             val viewModel = ViewModelProviders.of(it).get(ScheduleViewModel::class.java)
             viewModel.getDays()?.observe(this, Observer<List<Day>> { days ->
