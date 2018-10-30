@@ -8,10 +8,8 @@ import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import kotlinx.android.synthetic.main.activity_main.*
-import rocks.mobileera.mobileera.adapters.interfaces.AddToFavoritesCallback
-import rocks.mobileera.mobileera.model.Session
 
-class MainActivity : AppCompatActivity(), AddToFavoritesCallback {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,9 +26,4 @@ class MainActivity : AppCompatActivity(), AddToFavoritesCallback {
 
     override fun onSupportNavigateUp() = findNavController(hostFragment).navigateUp()
 
-    override fun onAddToFavoritesClick(session: Session?) {
-        applicationContext?.let {context ->
-            session?.toggleFavorites(context)
-        }
-    }
 }

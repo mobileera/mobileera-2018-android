@@ -19,10 +19,14 @@ import rocks.mobileera.mobileera.model.Session
 import rocks.mobileera.mobileera.utils.CircleTransform
 import rocks.mobileera.mobileera.utils.Preferences.Companion.domain
 import android.support.v7.widget.DividerItemDecoration
-import rocks.mobileera.mobileera.adapters.interfaces.AddToFavoritesCallback
+import rocks.mobileera.mobileera.adapters.interfaces.OnAddToFavoritesClickedListener
 import rocks.mobileera.mobileera.utils.favoriteIconResForSession
 
-class SessionViewHolder(val view: View,  private val tagsListener: TagCallback?, private val addToFavoritesListener: AddToFavoritesCallback?) : RecyclerView.ViewHolder(view) {
+class SessionViewHolder(
+    val view: View,
+    private val tagsListener: TagCallback?,
+    private val onAddToFavoritesClicked: OnAddToFavoritesClickedListener
+) : RecyclerView.ViewHolder(view) {
     val titleTextView: TextView = view.titleTextView
     val nameTextView: TextView = view.nameTextView
     val avatarImageView: ImageView = view.avatarImageView
@@ -38,7 +42,7 @@ class SessionViewHolder(val view: View,  private val tagsListener: TagCallback?,
 
     init {
         onAddToFavoritesListener = View.OnClickListener { v ->
-            addToFavoritesListener?.onAddToFavoritesClick(session)
+            onAddToFavoritesClicked(session)
             addToFavorites.setImageResource(favoriteIconResForSession(session, v.context.applicationContext))
         }
     }
