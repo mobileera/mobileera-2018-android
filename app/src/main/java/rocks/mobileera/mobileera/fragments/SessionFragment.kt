@@ -18,9 +18,11 @@ import android.provider.CalendarContract
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
+import androidx.navigation.fragment.NavHostFragment
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import rocks.mobileera.mobileera.SpeakerActivity
 import rocks.mobileera.mobileera.adapters.TagsAdapter
 import rocks.mobileera.mobileera.adapters.interfaces.SpeakerCallback
 import rocks.mobileera.mobileera.utils.favoriteIconResForSession
@@ -31,7 +33,15 @@ import java.util.*
 class SessionFragment : Fragment() {
 
     private val REQUEST_CODE_CALENDAR = 1
-    private var speakerListener: SpeakerCallback? = null
+
+    private var onSpeakerClicked: SpeakerCallback = { speaker ->
+        speaker?.let { value ->
+            val navController = NavHostFragment.findNavController(this)
+
+            val bundle = SpeakerActivity.createBundle(value)
+            navController.navigate(R.id.action_sessionFragment_to_speakerActivity, bundle)
+        }
+    }
 
     companion object {
 
@@ -52,7 +62,7 @@ class SessionFragment : Fragment() {
             val position = v.tag as? Int
             position?.let {
                 val speaker = session?.speakersList?.getOrNull(position)
-                speakerListener?.onSpeakerClick(speaker, R.id.action_sessionFragment_to_speakerActivity)
+                onSpeakerClicked(speaker)
             }
         }
     }
@@ -185,16 +195,4 @@ class SessionFragment : Fragment() {
         speaker2Layout.setOnClickListener(onClickListener)
     }
 
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is SpeakerCallback) {
-            speakerListener = context
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        speakerListener = null
-    }
 }

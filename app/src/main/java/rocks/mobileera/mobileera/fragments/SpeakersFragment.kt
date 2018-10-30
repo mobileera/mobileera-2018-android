@@ -2,14 +2,14 @@ package rocks.mobileera.mobileera.fragments
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
+import androidx.navigation.fragment.NavHostFragment
 import kotlinx.android.synthetic.main.fragment_speakers.*
 import rocks.mobileera.mobileera.R
+import rocks.mobileera.mobileera.SpeakerActivity
 import rocks.mobileera.mobileera.adapters.SpeakersAdapter
 import rocks.mobileera.mobileera.adapters.interfaces.SpeakerCallback
 import rocks.mobileera.mobileera.model.Speaker
@@ -17,7 +17,6 @@ import rocks.mobileera.mobileera.viewModels.SpeakersViewModel
 
 class SpeakersFragment : BaseFragment() {
 
-    private var listener: SpeakerCallback? = null
     private lateinit var viewModel: SpeakersViewModel
     private lateinit var speakersAdapter: SpeakersAdapter
 
@@ -33,7 +32,17 @@ class SpeakersFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        speakersAdapter = SpeakersAdapter(null, listener)
+
+        val speakerListener: SpeakerCallback = { speaker ->
+            speaker?.let { value ->
+                val navController = NavHostFragment.findNavController(this)
+
+                val bundle = SpeakerActivity.createBundle(value)
+                navController.navigate(R.id.action_navigation_speakers_to_speakerActivity, bundle)
+            }
+        }
+
+        speakersAdapter = SpeakersAdapter(null, speakerListener)
         speakersRecyclerView.layoutManager = LinearLayoutManager(context)
         speakersRecyclerView.adapter = speakersAdapter
         viewModel = ViewModelProviders.of(this).get(SpeakersViewModel::class.java)
@@ -45,19 +54,8 @@ class SpeakersFragment : BaseFragment() {
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is SpeakerCallback) {
-            listener = context
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.menu_speakers, menu)
     }
+
 }

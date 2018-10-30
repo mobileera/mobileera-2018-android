@@ -11,8 +11,8 @@ import rocks.mobileera.mobileera.model.Speaker
 
 class SpeakersAdapter(
         speakersList: List<Speaker>?,
-        private val listener: SpeakerCallback?)
-    : RecyclerView.Adapter<SpeakerViewHolder>() {
+        private val onSpeakerClicked: SpeakerCallback
+) : RecyclerView.Adapter<SpeakerViewHolder>() {
 
     var speakers = speakersList
         set(value) {
@@ -27,7 +27,7 @@ class SpeakersAdapter(
             val position = v.tag as? Int
             position?.let {
                 val speaker = speakers?.getOrNull(position)
-                listener?.onSpeakerClick(speaker, R.id.action_navigation_speakers_to_speakerActivity)
+                onSpeakerClicked(speaker)
             }
         }
     }
